@@ -1,5 +1,6 @@
 const taskContainer = document.querySelector(".task__container");
 
+const globalStore = [];
 
 const generateNewCard = (taskData) => `
 <div class="col-md-6 col-lg-4" id="${taskData.id}">
@@ -28,6 +29,23 @@ const generateNewCard = (taskData) => `
   </div>
   `;
 
+  const loadInitialCardData = () => {
+    
+    //localstorage to get tasky card data
+    const getCardData = localStorage.getItem("tasky");
+
+    //convert to normal object
+    const {cards} = JSON.parse(getCardData);
+
+    //loop over those array of task objects to create html card and inject it to the DOM
+    cards.map((cardObject) => {
+      taskContainer.insertAdjacentHTML("beforeend", generateNewCard(cardObject));
+      
+      //updating our globalStore
+      globalStore.push(cardObject);
+    })
+
+  };
 
 const saveChanges = () =>{
     const taskData = {
@@ -39,4 +57,14 @@ const saveChanges = () =>{
     };
 
     taskContainer.insertAdjacentHTML("beforeend", generateNewCard(taskData));
-};
+
+    globalStore.push(taskData);
+
+    localStorage.setItem("tasky"/*id for local storage to identify the correct files from your computer*/
+      , JSON.stringify/* JSON - to javasript objects // stringify - converts to string */
+      ({cars:globalStore}) );     //setItem() - add item to local storage
+
+
+
+
+  };
